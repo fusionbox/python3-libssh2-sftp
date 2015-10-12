@@ -1,3 +1,5 @@
+import sys
+
 from cffi import FFI
 
 ffi = FFI()
@@ -102,7 +104,12 @@ ffi.cdef("""
 """)
 
 
-lib = ffi.dlopen('libssh2.so')
+if sys.platform == 'linux':
+    lib = ffi.dlopen('libssh2.so')
+elif sys.platform == 'darwin':
+    lib = ffi.dlopen('libssh2')
+else:
+    assert False, "Don't know how to load libssh2 on {}".format(sys.platform)
 
 
 def libssh2_session_init():
